@@ -66,7 +66,8 @@ object PopularHashtagsSparkStreaming {
                                  x.startsWith("#")))
     // Map each hashtag to a key/value pair of (hashtag, 1) so we can count them up by adding up the values
     //val hashtagKeyValues = hashtags.map(hashtag => (hashtag, 1))
-    val tweetWordsKeyValues = tweetwords.map(tweetwords => (tweetwords, 1))
+    //val tweetWordsKeyValues = tweetwords.map(tweetwords => (tweetwords, 1))
+    val tweetWordsKeyValues = hashtags.map(t => (t, 1))
     
     // Now count them up over a 5 minute window sliding every one second
     // basically its a count over a 5minute window that is updated every one second.
@@ -75,7 +76,7 @@ object PopularHashtagsSparkStreaming {
     //  You will often see this written in the following shorthand:
     //val hashtagCounts = hashtagKeyValues.reduceByKeyAndWindow( _ + _, _ -_, Seconds(300), Seconds(1))
     
-    // Sort the results by the count values
+    // Sort the results by the count values in desc order.
     //val sortedResults = hashtagCounts.transform(rdd => rdd.sortBy(x => x._2, false))
     val sortedResults = tweetwordCounts.transform(rdd => rdd.sortBy(x => x._2, false))
     
@@ -84,7 +85,6 @@ object PopularHashtagsSparkStreaming {
     //sortedResults.print(30)
     
     // Set a checkpoint directory, and kick it all off
-    // I could watch this all day!
     //ssc.checkpoint("C:/checkpoint/")
     ssc.checkpoint("/Users/tjee/SparkStreamingUdemy/CheckPoint")
     ssc.start()
