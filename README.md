@@ -1,45 +1,54 @@
 ## ScalaSparkExamples
  * scala code for basic applications :
    * **_RatingsCounter.scala_** :   
-     * Dataset used is [MovieLens 100K](https://grouplens.org/datasets/movielens/100k/)  
-     * 100,000 ratings (1-5) from 943 users on 1682 movies.   
-     * Each user has rated at least 20 movies.   
-     * _u.data_ :   
-       - full u dataset with 100000 ratings by 943 users on 1682 items.
-       - each user rated atleast 20 movies.
-       - tab separated list of user id | item id | rating | timestamp  
-     * _u.info_ :
-       - number of users, items and ratings in u dataset.
-     * _u.item_ : 
-       - Information about the items(movies).
-       - This is a tab separated list of movie id | movie title | release date | video release date | IMDb URL | unknown | 
-         Action | Adventure | Animation | Children's | Comedy | Crime | Documentary | Drama | Fantasy | Film-Noir | Horror | 
-         Musical | Mystery | Romance | Sci-Fi | Thriller | War | Western |  
-         The last 19 fields are the genres, a 1 indicates the movie is of that genre, a 0 indicates it is not; movies can be 
-         in several genres at once. 
-       - The movie ids are the ones used in the u.data dataset.
-     * _u.genre_ :
-       - list of movie genres.
-     * _u.user_ : 
-       - Demographic information about the users. This is a tab separated list of user id | age | gender | occupation | zip 
-         code
-       - user ids are the ones used in u.data dataset.
-     * _u.occupation_ :
-       - list of the occupations.       
-     * We finally return count of each star rating that exists in MovieLens 100K dataset.  
-   
+     * Dataset used is [MovieLens 100K](https://grouplens.org/datasets/movielens/100k/).    
+     * 100,000 ratings (1-5) from 943 users on 1682 movies.     
+     * Load rating data into RDD.  
+     * Using map method convert each line to string, split on tab and extract third field.  
+     * Use countByValue to generate a map of (rating, count).  
+     * Print the sorted map based on rating as final result.   
+      
    * **_FriendsByAge.scala_** :
-     * Report number of friends by age in a social network.  
+     * Load each line of input into RDD.  
+     * Define function parseLine that splits line of input into (age, numFriends) tuples.  
+     * Create tuple of (age, numFriends) using function parseLine on the RDD.  
+     * Using mapValues convert each numFriends value to tuple of (numFriends, 1). Now reduceByKey to sum up total numFriends and 
+       1's for each age.  
+     * Use tuple (age, (totalnumFriends, totalInstances)) to get averageFriends by age as (x._1 /x._2).     
+    
    * **_MinTemperatures.scala_** :     
-     * Report min temparature by weather station after parsing the input data.  
+     * Report min temparature by weather station after parsing the input data.    
+     
    * **_WordCountBetterSorted.scala_** : 
-     * Returns count of words appearing in a book in a sorted manner.    
+     * Load each line of book into an RDD.  
+     * Split using a regular expression that extracts words.  
+     * Transform all words to lowercase.  
+     * To count occurence of each word map lowercase words like lowercaseWords.map(x => (x , 1)) and then reduceByKey.  
+     * Flip (word,count) to (count, word) and then sort by key.  
+     
    * **_TotalSpentByCustomerSorted.scala_** : 
-     * Returns total amount spent per customer in synthetic e-commerce data.   
+     * Map RDD, holding the input data, to (customerID, amountSpent) tuples.  
+     * Using reduceByKey get the totalAmount spent by each customer.  
+     * Flip this RDD using x => (x._2, x._1) and then sort by key.
+     * Use collect() on this RDD and print the results.  
+     
    * **_PopularMovies.scala_** : 
-     * Returns count of number of times movie has been rated alongside the movie id.  
+     * Load input data into RDD that is mapped to (movieID, 1) tuple.
+     * To get movieCount use reduceByKey on this RDD like movies.reduceByKey((x,y) => x + y)
+     * Flip (movieID, count) tuple to (count, movieID) and then sort by key.
+     * Use collect() on this RDD and print results.
+
    * **_PopularMoviesAndNames.scala_** :
-     * Returns count of number of times movie has been rated alongside the movie name.
+     * Using given input of u.item create map of Ints to String.   
+     * Broadcast variable of the ID -> movie name map.  
+     * Load input of u.data into RDD.
+     * Map this RDD to (movieID, 1) tuple .  
+     * Using reduceByKey count all 1's for each movieID.  
+     * Flip (movieID, count) to (count, movieID) and sort by key.  
+     * Map this sortedRDD containing (count, movieID) to (movieName, count) using the broadcast variable.   
+       This is done as sortedRDD.map(x => (broadcastVar.value(x._2), x._1)) .   
+     * Use collect() on this new RDD of (movieName, count) and print results.  
+     
    * **_MostPopularSuperhero.scala_** :
      * Returns most popular superhero with its total co-occurences.
    * **_MovieSimilarities.scala_** :
