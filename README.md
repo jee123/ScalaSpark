@@ -1,6 +1,7 @@
 ## ScalaSparkExamples
  * scala code for basic applications :
    * **_RatingsCounter.scala_** :   
+     * Return tuple of (rating, count) which is count of users for each rating. 
      * Dataset used is [MovieLens 100K](https://grouplens.org/datasets/movielens/100k/).    
      * 100,000 ratings (1-5) from 943 users on 1682 movies.     
      * Load rating data into RDD.  
@@ -9,6 +10,7 @@
      * Print the sorted map based on rating as final result.   
       
    * **_FriendsByAge.scala_** :
+     * Return tuple of (age, numberofFriends) which is average number of friends by age in social network.
      * Load each line of input into RDD.  
      * Define function parseLine that splits line of input into (age, numFriends) tuples.  
      * Create tuple of (age, numFriends) using function parseLine on the RDD.  
@@ -20,6 +22,7 @@
      * Report min temparature by weather station after parsing the input data.    
      
    * **_WordCountBetterSorted.scala_** : 
+     * Return tuple of (count, word) where count is sorted occurence of frequency of the word.  
      * Load each line of book into an RDD.  
      * Split using a regular expression that extracts words.  
      * Transform all words to lowercase.  
@@ -27,18 +30,21 @@
      * Flip (word,count) to (count, word) and then sort by key.  
      
    * **_TotalSpentByCustomerSorted.scala_** : 
+     * Return tuple of (amountSpent, customerId) where amountSpent is sorted amount of money spent by person with the given customerId.  
      * Map RDD, holding the input data, to (customerID, amountSpent) tuples.  
      * Using reduceByKey get the totalAmount spent by each customer.  
      * Flip this RDD using x => (x._2, x._1) and then sort by key.
      * Use collect() on this RDD and print the results.  
      
    * **_PopularMovies.scala_** : 
+     * Return tuple of (count, movieId) where count is sorted occurence of frequency of the movie with id given by movieId.   
      * Load input data into RDD that is mapped to (movieID, 1) tuple.
      * To get movieCount use reduceByKey on this RDD like movies.reduceByKey((x,y) => x + y)
      * Flip (movieID, count) tuple to (count, movieID) and then sort by key.
      * Use collect() on this RDD and print results.
 
    * **_PopularMoviesAndNames.scala_** :
+     * Return tuple of (movieName, count) where count is sorted occurence of frequency of the movie with name given by movieName.   
      * Using given input of u.item create map of Ints to String.   
      * Broadcast variable of the ID -> movie name map.  
      * Load input of u.data into RDD.
